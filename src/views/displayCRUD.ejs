@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>get CRUD display</title>
+</head>
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+        border-collapse: collapse
+        
+    }
+</style>
+
+<body>
+
+    <h2>TH elements define table headers</h2>
+
+    <table style="width:100%">
+        <tr>
+            <th>email</th>
+            <th>first name</th>
+            <th>last name</th>
+            <th>address</th>
+            <th>action</th>
+        </tr>
+
+        <% for(let i=0; i < data.length; i++) { %>
+            <tr>
+                <td>
+                    <%= data[i].email %>
+                </td>
+                <td>
+                    <%= data[i].firstName %>
+                </td>
+                <td>
+                    <%= data[i].lastName %>
+                </td>
+                <td>
+                    <%= data[i].address %>
+                </td>
+                <td>
+                   <a href="/edit-CRUD?id=<%= data[i].id %>" class="btn-edit" type="button">edit</a>
+                   <a href="/delete-CRUD?id=<%= data[i].id %>"class="btn-delete" type="button">delete</a>
+                </td>
+            </tr>
+        <% } %>
+
+
+    </table>
+
+    <p>To undestand the example better, we have added borders to the table.</p>
+
+</body>
+
+</html>
