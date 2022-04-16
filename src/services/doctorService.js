@@ -16,10 +16,17 @@ let getTopDoctorHome = (limit) => {
                 include: [
                     { model: db.Allcode, as: 'positionData', attributes: ['valueEn', 'valueVi'] },
                     { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] },
+                    {
+                        model: db.Doctor_info, attributes: ['id'],
+                        include: [
+                            { model: db.Specialty, as: 'specialtyData', attributes: ['name', 'id'] },
+                        ],
+                    },
                 ],
+
                 raw: true,
                 nest: true
-                // raw: true
+
             })
             resolve({
                 errCode: 0,
@@ -458,7 +465,7 @@ let getProfileDoctorById = (doctorId) => {
                 nest: true
             })
             if (data && data.image) {
-                data.image = new Buffer(data.image, 'base64').toString('binary')
+                data.image = Buffer.from(data.image, 'base64').toString('binary')
             }
             if (!data) {
                 data = {}
@@ -498,7 +505,7 @@ let getListPatientforDoctor = (doctorId, date) => {
                                 { model: db.Allcode, as: 'genderData', attributes: ['valueEn', 'valueVi'] }
                             ]
                         },
-                        {model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['valueEn', 'valueVi']}
+                        { model: db.Allcode, as: 'timeTypeDataPatient', attributes: ['valueEn', 'valueVi'] }
 
                     ],
                     raw: false,
@@ -523,28 +530,28 @@ let getListPatientforDoctor = (doctorId, date) => {
 let sendRemedy = (data) => {
     return new Promise(async (resolve, reject) => {
         try {
-            if (!data.email|| !data.doctorId||
-                 !data.patientId || !data.timeType ||
-                  !data.date) {
+            if (!data.email || !data.doctorId ||
+                !data.patientId || !data.timeType ||
+                !data.date) {
                 resolve({
                     errCode: 1,
                     errMessage: 'Missing required parameter'
                 })
             } else {
-               
+
                 // update patient status
                 let appointment = await db.Booking.findOne({
                     where: {
-                        doctorId: data.doctorId, 
-                        patientId: data.patientId, 
-                        timeType: data.timeType, 
+                        doctorId: data.doctorId,
+                        patientId: data.patientId,
+                        timeType: data.timeType,
                         date: data.date,
                         statusId: 'S2'
                     },
                     raw: false
                 })
 
-                if(appointment){
+                if (appointment) {
                     appointment.statusId = 'S3'
                     await appointment.save()
                 }
@@ -553,7 +560,7 @@ let sendRemedy = (data) => {
                 await emailService.sendAttackment(data)
                 resolve({
                     errCode: 0,
-                   message: 'ok'
+                    message: 'ok'
                 })
             }
         } catch (e) {
@@ -577,6 +584,6 @@ module.exports = {
 
     getProfileDoctorById: getProfileDoctorById,
     getListPatientforDoctor: getListPatientforDoctor,
-    sendRemedy:sendRemedy
+    sendRemedy: sendRemedy
 
 }                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            
